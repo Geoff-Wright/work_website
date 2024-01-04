@@ -1,0 +1,19 @@
+{% extends 'events/base.html' %}
+
+{% block content %}
+    <h1>Consultants</h1>
+    <br/><br/>
+
+    <table class="table table-striped table-hover table-bordered">
+
+    {% for consultant in consultant_list %}
+        <tr>
+            <td>{{ consultant }}<br/></td>
+            <td align="right">
+                <a href="{% url 'update_consultant' consultant.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+>
+{%  endblock %}
