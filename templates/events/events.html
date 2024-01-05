@@ -3,20 +3,17 @@
 {% block content %}
     <h1>Events</h1>
     <br/><br/>
-    {% for event in events_list %}
-            <div class="card">
-            <div class="card-header">
-                <h1>{{ event.name }}</h1>
-            </div>
-                <div class="card-body">
-                    <h5 class="card-text">Date From: {{ event.event_date_from }} </h5>
-                    <h5 class="card-text">Date To: {{ event.event_date_to }} </h5>
-                    <h5 class="card-text">Venue: {{ event.venue }} </h5>
-                    <h5 class="card-text">Contact: {{ event.contact }} </h5>
-                    <h5 class="card-text">Instructor: {{ event.instructor }} </h5>
-                </div>
-            </div>
 
+    <table class="table table-striped table-hover table-bordered">
+
+    {% for event in event_list %}
+        <tr>
+            <td> <a href="{% url 'show_event' event.id %}"> {{ event }} </a><br/></td>
+            <td align="right">
+                <a href="{% url 'update_event' event.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
+            </td>
+        </tr>
     {% endfor %}
+    </table>
 >
 {%  endblock %}

@@ -47,6 +47,12 @@ def list_consultants(request):
     return render(request, 'events/consultants.html', {'consultant_list': consultant_list})
 
 
+def delete_consultant(request, consultant_id):
+    consultant = Consultant.objects.get(pk=consultant_id)
+    consultant.delete()
+    return redirect('consultants')
+
+
 def update_consultant(request, consultant_id):
     consultant = Consultant.objects.get(pk=consultant_id)
     form = ConsultantForm(request.POST or None, instance=consultant)
@@ -54,6 +60,11 @@ def update_consultant(request, consultant_id):
         form.save()
         return redirect('list_consultants')
     return render(request, 'events/update_consultant.html', {'consultant': consultant, 'form': form})
+
+
+def show_consultant(request, consultant_id):
+    consultant = Consultant.objects.get(pk=consultant_id)
+    return render(request, 'events/show_consultant.html', {'consultant': consultant})
 
 
 # *************EVENTS
@@ -73,7 +84,7 @@ def add_event(request):
 
 def list_events(request):
     event_list = Event.objects.all()
-    return render(request, 'events/event_list.html', {'event_list': event_list})
+    return render(request, 'events/events.html', {'event_list': event_list})
 
 
 def update_event(request, event_id):
@@ -104,6 +115,11 @@ def search_events(request):
         return render(request,
                       'events/search_events.html',
                       {})
+
+
+def show_event(request, event_id):
+    event = Venue.objects.get(pk=event_id)
+    return render(request, 'events/show_event.html', {'event': event})
 
 
 # ******VENUES

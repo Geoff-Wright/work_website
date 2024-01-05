@@ -1,0 +1,15 @@
+{% extends 'events/base.html' %}
+
+{% block content %}
+
+    <div class="card">
+        <div class="card-header">
+            <h1>{{ consultant }}</h1>
+        </div>
+        <div class="card-body">
+            <h5 class="card-text">Email: {{ consultant.email }} </h5>
+            <h5 class="card-text">Phone: {{ consultant.phone }} </h5>
+        </div>
+    </div>
+
+{%  endblock %}

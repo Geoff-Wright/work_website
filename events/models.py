@@ -20,6 +20,7 @@ class Consultant(models.Model):
     last_name = models.CharField('Last Name', max_length=30)
     email = models.EmailField('Email Address')
     phone = models.CharField('Contact Phone', max_length=25)
+    # 'first_name' 'last_name' 'email' 'phone'
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
@@ -27,11 +28,11 @@ class Consultant(models.Model):
 
 class Event(models.Model):
     name = models.CharField('Event Name', max_length=120)
-    event_date_from = models.DateTimeField('Event_Date_From')
-    event_date_to = models.DateTimeField('Event Date To')
+    event_date_from = models.DateField('Event_Date_From')
+    event_date_to = models.DateField('Even_Date_To')
     venue = models.ForeignKey(Venue, blank=True, null=True, on_delete=models.CASCADE)
-    contact = models.CharField('Contact', max_length=60)
-    instructor = models.ManyToManyField(Consultant, blank=True)
+    contact = models.CharField('Contact', max_length=60, blank=True, null=True,)
+    instructor = models.ForeignKey(Consultant, blank=True, null=True, on_delete=models.CASCADE)
     # 'name', 'event_date_from', 'event_date_to', 'venue', 'contact', 'instructor'
 
     def __str__(self):

@@ -8,7 +8,7 @@
 
     {% for consultant in consultant_list %}
         <tr>
-            <td>{{ consultant }}<br/></td>
+            <td> <a href="{% url 'show_consultant' consultant.id %}" > {{ consultant }} </a><br/></td>
             <td align="right">
                 <a href="{% url 'update_consultant' consultant.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
             </td>

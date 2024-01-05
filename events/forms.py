@@ -35,8 +35,10 @@ class EventForm(ModelForm):
         }
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Event"}),
-            'event_date_from': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Date From"}),
-            'event_date_to': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Date To"}),
+            'event_date_from': forms.DateInput(
+                format='%Y-%m-%d', attrs={'class': 'form-control', 'placeholder': 'Select a date', 'type': 'date'}),
+            'event_date_to': forms.DateInput(
+                format='%Y-%m-%d', attrs={'class': 'form-control', 'placeholder': 'Select a date', 'type': 'date'}),
             'venue': forms.Select(attrs={'class': 'form-select', 'placeholder': "Venue"}),
             'contact': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Contact"}),
             'instructor': forms.Select(attrs={'class': 'form-select', 'placeholder': "Instructor"}),
