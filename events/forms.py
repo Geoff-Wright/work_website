@@ -24,24 +24,30 @@ class ConsultantForm(ModelForm):
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ('name', 'event_date_from', 'event_date_to', 'venue', 'contact', 'instructor')
+        fields = ('name', 'status', 'start', 'end', 'venue', 'instructor')
         labels = {
             'name': '',
-            'event_date_from': '',
-            'event_date_to': '',
-            'venue': 'Venue',
-            'contact': '',
-            'instructor': 'Instructor',
+            'status': '',
+            'start': 'Event Start',
+            'end': 'Event End',
+            'venue': '',
+            'instructor': '',
         }
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Event"}),
-            'event_date_from': forms.DateInput(
-                format='%Y-%m-%d', attrs={'class': 'form-control', 'placeholder': 'Select a date', 'type': 'date'}),
-            'event_date_to': forms.DateInput(
-                format='%Y-%m-%d', attrs={'class': 'form-control', 'placeholder': 'Select a date', 'type': 'date'}),
-            'venue': forms.Select(attrs={'class': 'form-select', 'placeholder': "Venue"}),
-            'contact': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Contact"}),
-            'instructor': forms.Select(attrs={'class': 'form-select', 'placeholder': "Instructor"}),
+            'name': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': "Event"}),
+            'status': forms.Select(
+                attrs={'class': 'form-select', 'placeholder': "Status"}),
+            'start': forms.DateTimeInput(
+                format='%Y-%m-%dT%H:%M',
+                attrs={'type': 'datetime-local'}),
+            'end': forms.DateTimeInput(
+                format='%Y-%m-%dT%H:%M',
+                attrs={'type': 'datetime-local'}),
+            'venue': forms.Select(
+                attrs={'class': 'form-select', 'placeholder': "Venue"}),
+            'instructor': forms.Select(
+                attrs={'class': 'form-select', 'placeholder': "Instructor"}),
         }
 
 

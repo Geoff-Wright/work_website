@@ -21,6 +21,9 @@
     <orderEntry type="module" module-name="events_website" />
     <orderEntry type="library" name="jquery-3.2.1.slim" level="application" />
     <orderEntry type="module" module-name="ams" />
+    <orderEntry type="library" name="fullcalendar" level="application" />
+    <orderEntry type="library" name="moment.js" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

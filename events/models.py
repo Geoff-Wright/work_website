@@ -1,4 +1,25 @@
 from django.db import models
+from django_better_choices import Choices
+
+
+class EventStatus(Choices):
+    CREATED = 'Created'
+    PENDING = Choices.Value('Pending', help_text='This set status to pending')
+    SOFTBOOKED = Choices.Value('Soft Booked', help_text='This set status to pending')
+    HARDBOOKED = Choices.Value('Hard Booked', help_text='This set status to pending')
+    ON_HOLD = Choices.Value('On Hold', value='custom_on_hold')
+    VALID = Choices.Subset('CREATED', 'ON_HOLD')
+
+    class INTERNAL_STATUS(Choices):
+        REVIEW = 'On Review'
+
+    @classmethod
+    def get_help_text(cls):
+        return tuple(
+            value.help_text
+            for value in cls.values()
+            if hasattr(value, 'help_text')
+        )
 
 
 class Venue(models.Model):
@@ -26,14 +47,34 @@ class Consultant(models.Model):
         return self.first_name + ' ' + self.last_name
 
 
+class Course(models.Model):
+    course_number = models.CharField('Course Identifier', max_length=25)
+    course_version = models.IntegerField('Course Version', null=True)
+    course_title = models.CharField('Course Title', max_length=200)
+    course_duration = models.IntegerField('Duration', null=True)
+    certification = models.CharField('Certification', max_length=100, null=True)
+
+    def __str__(self):
+        return self.course_number
+
+
+class Certificate(models.Model):
+    certification = models.CharField('Certification', max_length=25, null=True)
+    cert_title = models.CharField('Cert Title', max_length=250, null=True)
+    cert_type = models.CharField('Cert Title', max_length=100, null=True)
+
+    def __str__(self):
+        return self.certification
+
+
 class Event(models.Model):
     name = models.CharField('Event Name', max_length=120)
-    event_date_from = models.DateField('Event_Date_From')
-    event_date_to = models.DateField('Even_Date_To')
-    venue = models.ForeignKey(Venue, blank=True, null=True, on_delete=models.CASCADE)
-    contact = models.CharField('Contact', max_length=60, blank=True, null=True,)
-    instructor = models.ForeignKey(Consultant, blank=True, null=True, on_delete=models.CASCADE)
-    # 'name', 'event_date_from', 'event_date_to', 'venue', 'contact', 'instructor'
+    status = models.CharField(choices=EventStatus, default=EventStatus.PENDING, max_length=25)
+    start = models.DateTimeField('start', default="2024-01-01 00:00:00")
+    end = models.DateTimeField('end', default="2024-01-01 00:00:00")
+    venue = models.ForeignKey(Venue, blank=True, null=True, on_delete=models.PROTECT)
+    instructor = models.ForeignKey(Consultant, blank=True, null=True, on_delete=models.PROTECT)
+    # 'name', 'start', 'end', 'venue', 'contact', 'instructor'
 
     def __str__(self):
         return self.name

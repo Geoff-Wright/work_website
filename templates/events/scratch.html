@@ -1,3 +1,89 @@
+def home(request, year=datetime.now().year, month=datetime.now().strftime('%B')):
+    # convert month from name to number
+    month = month.capitalize()
+    month_number = list(Calendar.month_name).index(month)
+    month_number = int(month_number)
+    # create calendar
+    cal = HTMLCalendar().formatmonth(year, month_number)
+    # get current year
+    now = datetime.now()
+    current_year = now.year
+    time = now.strftime('%H:%M')
+
+    return render(request,
+                  'events/home.html', {
+                      'year': year, 'month': month,
+                      'cal': cal,
+                      'current_year': current_year, 'time': time,
+                  })
+
+
+
+# used in small cal only
+# *************EVENTS
+def add_events(request):
+    submitted = False
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid:
+            form.save()
+            return HttpResponseRedirect('/add_event?submitted=True')
+    else:
+        form = EventForm
+        if 'submitted' in request.GET:
+            submitted = True
+    return render(request, 'events/add_event.html', {'form': form, 'submitted': submitted})
+
+
+def list_events(request):
+    event_list = Event.objects.all()
+    return render(request, 'events/events.html', {'event_list': event_list})
+
+
+
+
+
+def search_events(request):
+    if request.method == "POST":
+        searched = request.POST['searched']
+        events = Event.objects.filter(description__contains=searched)
+
+        return render(request,
+                      'events/search_events.html',
+                      {'searched': searched,
+                       'events': events})
+    else:
+        return render(request,
+                      'events/search_events.html',
+                      {})
+
+
+
+
+
+
+
+navbar
+<a class="navbar-brand" href="{% url 'home' %}">Scheduler</a>
+       <li class="nav-item">
+         <a class="nav-link" href="{% url 'home' '2024' 'January' %}">Calendar</a>
+       </li>
+<li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Events
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{% url 'list_events' %}">All Events</a></li>
+            <li><a class="dropdown-item" href="{% url 'add_event' %}">Add Event</a></li>
+            <li><a class="dropdown-item" href="{% url 'my_events' %}">My Events</a></li>
+            <li><a class="dropdown-item" href="{% url 'search_events' %}">Search Events</a></li>
+
+
+          </ul>
+        </li>
+
+
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="{% url 'home' %}">Scheduler</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

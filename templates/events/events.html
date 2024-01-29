@@ -8,7 +8,7 @@
 
     {% for event in event_list %}
         <tr>
-            <td> <a href="{% url 'show_event' event.id %}"> {{ event }} </a><br/></td>
+            <td> <a href="{% url 'show_event' event.id %}"> {{ event }}</a></td>
             <td align="right">
                 <a href="{% url 'update_event' event.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
             </td>
