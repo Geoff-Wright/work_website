@@ -1,0 +1,17 @@
+{% extends 'events/base.html' %}
+
+{% block content %}
+    <br/><br/>
+
+    <table class="table table-striped table-hover table-bordered">
+
+    {% for cons_course in cons_course_list %}
+        <tr>
+            <td>  {{ cons_course.consultant }}</td>
+            <td>  {{ cons_course.course }}</td>
+            <td>  {{ cons_course.choice }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+>
+{%  endblock %}

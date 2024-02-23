@@ -45,9 +45,31 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'list_consultants' %}">All Consultants</a></li>
-            <li><a class="dropdown-item" href="{% url 'add_consultant' %}">Add Consultant</a></li>
+            <li><a class="dropdown-item" href="{% url 'add_consultant' %}">Add Consultant</a>
+            <li><a class="dropdown-item" href="{% url 'add_cons_course' %}">Add Cons - Course</a>
+            <li><a class="dropdown-item" href="{% url 'list_cons_course' %}">List Consultant - Course</a>
+            <li><a class="dropdown-item" href="{% url 'update_cons_course' %}"> Update Consultant - Course</a>
           </ul>
         </li>
+
+      {% if user.is_authenticated %}
+          {% if user.is_superuser %}
+              <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin_approval' %}">Admin</a>
+            </li>
+          {%endif %}
+          <li class="nav-item">
+             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          </li>
+      {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'register_user' %}">Register</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login_user' %}">Login</a>
+        </li>
+      {% endif %}
 
       </ul>
       <form class="d-flex" method=POST action="{% url 'search_venues' %}">

@@ -1,8 +1,94 @@
 from django.shortcuts import render, redirect
-from .forms import VenueForm, EventForm, ConsultantForm
+from .forms import VenueForm, EventForm, ConsultantForm, ConsCourseForm
 from django.http import HttpResponseRedirect
 from .models import *
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+
+def my_events(request):
+    if request.user.is_authenticated:
+        me = request.user.id
+        events = Event.objects.filter(attendees=me)
+        return render(request,
+                      'events/my_events.html', {
+                          "events": events
+                      })
+
+    else:
+        messages.success(request, "You Aren't Authorized To View This Page")
+        return redirect('index')
+
+
+# Create Admin Event Approval Page
+def admin_approval(request):
+    # Get The Venues
+    venue_list = Venue.objects.all()
+    # Get Counts
+    event_count = Event.objects.all().count()
+    venue_count = Venue.objects.all().count()
+    user_count = User.objects.all().count()
+
+    event_list = Event.objects.all().order_by('-event_date')
+    if request.user.is_superuser:
+        if request.method == "POST":
+            # Get list of checked box id's
+            id_list = request.POST.getlist('boxes')
+            # Uncheck all events
+            event_list.update(approved=False)
+            # Update the database
+            for x in id_list:
+                Event.objects.filter(pk=int(x)).update(approved=True)
+            # Show Success Message and Redirect
+            messages.success(request, "Event List Approval Has Been Updated!")
+            return redirect('list-events')
+        else:
+            return render(request, 'events/admin_approval.html',
+                          {"event_list": event_list,
+                           "event_count": event_count,
+                           "venue_count": venue_count,
+                           "user_count": user_count,
+                           "venue_list": venue_list})
+    else:
+        messages.success(request, "You aren't authorized to view this page!")
+        return redirect('index')
+
+    return render(request, 'events/admin_approval.html')
+
+
+def list_cons_course(request):
+    cons_course_list = Cons_Course.objects.order_by("consultant")
+    return render(request, 'events/cons_course.html', {'cons_course_list': cons_course_list})
+
+
+def update_cons_course(request):
+    cons_course = Consultant.objects.get(pk=8)
+    form = ConsCourseForm(request.POST or None, instance=cons_course)
+    if form.is_valid():
+        form.save()
+        return redirect('list_cons_course')
+    return render(request, 'events/update_cons_course.html', {'cons_course': cons_course, 'form': form})
+
+
+def delete_cons_course(request, cons_course_id):
+    cons_course = Cons_Course.objects.get(pk=cons_course_id)
+    cons_course.delete()
+    return redirect('consultants')
+
+
+def add_cons_course(request):
+    submitted = False
+    if request.method == 'POST':
+        form = ConsCourseForm(request.POST)
+        if form.is_valid:
+            form.save()
+            return HttpResponseRedirect('/add_cons_course?submitted=True')
+    else:
+        form = ConsCourseForm
+        if 'submitted' in request.GET:
+            submitted = True
+    return render(request, 'events/add_cons_course.html', {'form': form, 'submitted': submitted})
 
 
 def list_courses(request):

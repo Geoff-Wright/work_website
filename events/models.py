@@ -58,6 +58,15 @@ class Course(models.Model):
         return self.course_number
 
 
+class Cons_Course(models.Model):
+    consultant = models.ForeignKey(Consultant, blank=False, default=False, on_delete=models.PROTECT)
+    course = models.ForeignKey(Course, blank=False, default=False, on_delete=models.PROTECT)
+    choice = models.IntegerField('choice', default=0)
+
+    def __str__(self):
+        return self.consultant
+
+
 class Certificate(models.Model):
     certification = models.CharField('Certification', max_length=25, null=True)
     cert_title = models.CharField('Cert Title', max_length=250, null=True)
