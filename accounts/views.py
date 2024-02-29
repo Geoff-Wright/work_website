@@ -22,9 +22,9 @@ def login_user(request):
 
 
 def logout_user(request):
-    logout(request)
-    messages.success(request, "You Were Logged Out!")
-    return redirect('index')
+    # logout(request)
+    # messages.success(request, "You Were Logged Out!")
+    return render(request, 'accounts/logout_user.html', {})
 
 
 def register_user(request):

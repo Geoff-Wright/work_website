@@ -24,26 +24,14 @@ class ConsCourseForm(ModelForm):
 
 
 class ConsultantForm(ModelForm):
-    Consultant = models.CharField(max_length=200, default="")
+    consultant = forms.ChoiceField(choices=(User.objects.all()))
 
     class Meta:
-        model = Consultant
-        fields = ('first_name', 'last_name', 'email', 'phone')
-        labels = {
-            'first_name': '',
-            'last_name': '',
-            'email': '',
-            'phone': '',
-        }
-        widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "First Name"}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Last Name"}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': "Email Address"}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Phone"}),
-        }
+        model = User
+        fields = ['first_name']
 
     def __unicode__(self):
-        return self.Consultant
+        return self.consultant
 
 
 class EventForm(ModelForm):

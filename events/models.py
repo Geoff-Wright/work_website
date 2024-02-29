@@ -1,5 +1,26 @@
 from django.db import models
 from django_better_choices import Choices
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.IntegerField(max_length=25, null=True, blank=True)
+    location = models.CharField(max_length=30, null=True, blank=True)
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 
 class EventStatus(Choices):
@@ -36,17 +57,6 @@ class Venue(models.Model):
         return self.name
 
 
-class Consultant(models.Model):
-    first_name = models.CharField('First Name', max_length=30)
-    last_name = models.CharField('Last Name', max_length=30)
-    email = models.EmailField('Email Address')
-    phone = models.CharField('Contact Phone', max_length=25)
-    # 'first_name' 'last_name' 'email' 'phone'
-
-    def __str__(self):
-        return self.first_name + ' ' + self.last_name
-
-
 class Course(models.Model):
     course_number = models.CharField('Course Identifier', max_length=25)
     course_version = models.IntegerField('Course Version', null=True)
@@ -59,7 +69,7 @@ class Course(models.Model):
 
 
 class Cons_Course(models.Model):
-    consultant = models.ForeignKey(Consultant, blank=False, default=False, on_delete=models.PROTECT)
+    consultant = models.ForeignKey(User, blank=False, default=False, on_delete=models.PROTECT)
     course = models.ForeignKey(Course, blank=False, default=False, on_delete=models.PROTECT)
     choice = models.IntegerField('choice', default=0)
 
@@ -82,8 +92,7 @@ class Event(models.Model):
     start = models.DateTimeField('start', default="2024-01-01 00:00:00")
     end = models.DateTimeField('end', default="2024-01-01 00:00:00")
     venue = models.ForeignKey(Venue, blank=True, null=True, on_delete=models.PROTECT)
-    instructor = models.ForeignKey(Consultant, blank=True, null=True, on_delete=models.PROTECT)
-    # 'name', 'start', 'end', 'venue', 'contact', 'instructor'
+    instructor = models.ForeignKey(User, blank=True, null=True, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name

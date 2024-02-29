@@ -30,7 +30,7 @@ def admin_approval(request):
     venue_count = Venue.objects.all().count()
     user_count = User.objects.all().count()
 
-    event_list = Event.objects.all().order_by('-event_date')
+    event_list = Event.objects.all().order_by('-start')
     if request.user.is_superuser:
         if request.method == "POST":
             # Get list of checked box id's
@@ -42,7 +42,7 @@ def admin_approval(request):
                 Event.objects.filter(pk=int(x)).update(approved=True)
             # Show Success Message and Redirect
             messages.success(request, "Event List Approval Has Been Updated!")
-            return redirect('list-events')
+            return redirect('list_events')
         else:
             return render(request, 'events/admin_approval.html',
                           {"event_list": event_list,
@@ -57,18 +57,22 @@ def admin_approval(request):
     return render(request, 'events/admin_approval.html')
 
 
+def venue_events(request, venue_id):
+    return
+
+
 def list_cons_course(request):
-    cons_course_list = Cons_Course.objects.order_by("consultant")
-    return render(request, 'events/cons_course.html', {'cons_course_list': cons_course_list})
+    # cons_course_list = Cons_Course.objects.order_by(Consultant)
+    return render(request, 'events/cons_course.html', {})
 
 
 def update_cons_course(request):
-    cons_course = Consultant.objects.get(pk=8)
-    form = ConsCourseForm(request.POST or None, instance=cons_course)
+    consultant_id = Cons_Course.objects.get(pk=1)
+    form = ConsCourseForm(request.POST or None, instance=consultant_id)
     if form.is_valid():
         form.save()
         return redirect('list_cons_course')
-    return render(request, 'events/update_cons_course.html', {'cons_course': cons_course, 'form': form})
+    return render(request, 'events/update_cons_course.html', {'consultant_id': consultant_id, 'form': form})
 
 
 def delete_cons_course(request, cons_course_id):
@@ -117,18 +121,20 @@ def add_consultant(request):
 
 
 def list_consultants(request):
-    consultant_list = Consultant.objects.all()
-    return render(request, 'events/consultants.html', {'consultant_list': consultant_list})
+    # consultant_list = Consultant.objects.all()
+    return render(request, 'events/consultants.html', {})
+    # return render(request, 'events/consultants.html', {'consultant_list': consultant_list})
 
 
-def delete_consultant(request, consultant_id):
-    consultant = Consultant.objects.get(pk=consultant_id)
-    consultant.delete()
+def delete_consultant(request):
+    # consultant = Consultant.objects.get(pk=consultant_id)
+    # consultant.delete()
     return redirect('consultants')
 
 
 def update_consultant(request, consultant_id):
-    consultant = Consultant.objects.get(pk=consultant_id)
+    # consultant = Consultant.objects.get(pk=consultant_id)
+    consultant = '1'
     form = ConsultantForm(request.POST or None, instance=consultant)
     if form.is_valid():
         form.save()
@@ -137,7 +143,8 @@ def update_consultant(request, consultant_id):
 
 
 def show_consultant(request, consultant_id):
-    consultant = Consultant.objects.get(pk=consultant_id)
+    # consultant = Consultant.objects.get(pk=consultant_id)
+    consultant = '1'
     return render(request, 'events/show_consultant.html', {'consultant': consultant})
 
 
@@ -192,17 +199,25 @@ def search_venues(request):
 
 
 def index(request):
-    list_events = Event.objects.all()
-    context = {
-        "events": list_events,
-    }
+    if request.user.is_superuser:
+        event_list = Event.objects.all()
+        context = {
+            "events": event_list,
+        }
+    else:
+        instructor = 8
+        event_list = Event.objects.filter(instructor_id=instructor)
+        context = {
+            "events": event_list,
+        }
+
     return render(request, 'events/index.html', context)
 
 
 def list_events(request):
-    list_events = Event.objects.all()
+    event_list = Event.objects.all()
     out = []
-    for event in list_events:
+    for event in event_list:
         out.append({
             'title': event.name,
             'id': event.id,
@@ -277,8 +292,8 @@ def update(request):
 
 
 def remove(request):
-    id = request.GET.get("id", None)
-    event = Event.objects.get(id=id)
+    get_id = request.GET.get("id", None)
+    event = Event.objects.get(id=get_id)
     event.delete()
     data = {}
     return JsonResponse(data)

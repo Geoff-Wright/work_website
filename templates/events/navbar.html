@@ -9,25 +9,31 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-      <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Events
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'all_events' %}">All Events</a></li>
-            <li><a class="dropdown-item" href="{% url 'add_events' %}">Add Events</a></li>
-          </ul>
-        </li>
+      {% if user.is_superuser %}
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Events
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'all_events' %}">All Events</a></li>
+                <li><a class="dropdown-item" href="{% url 'add_events' %}">Add Events</a></li>
+              </ul>
+            </li>
+      {% endif %}
 
-      <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Venues
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'list_venues' %}">All Venues</a></li>
-            <li><a class="dropdown-item" href="{% url 'add_venue' %}">Add Venue</a></li>
-          </ul>
-        </li>
+      {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Venues
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'list_venues' %}">All Venues</a></li>
+                {% if user.is_superuser %}
+                    <li><a class="dropdown-item" href="{% url 'add_venue' %}">Add Venue</a></li>
+                {% endif %}
+              </ul>
+            </li>
+      {% endif %}
 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -39,18 +45,22 @@
           </ul>
         </li>
 
-      <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Consultants
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'list_consultants' %}">All Consultants</a></li>
-            <li><a class="dropdown-item" href="{% url 'add_consultant' %}">Add Consultant</a>
-            <li><a class="dropdown-item" href="{% url 'add_cons_course' %}">Add Cons - Course</a>
-            <li><a class="dropdown-item" href="{% url 'list_cons_course' %}">List Consultant - Course</a>
-            <li><a class="dropdown-item" href="{% url 'update_cons_course' %}"> Update Consultant - Course</a>
-          </ul>
-        </li>
+      {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Consultants
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'list_consultants' %}">All Consultants</a></li>
+                <li><a class="dropdown-item" href="{% url 'list_cons_course' %}">List Consultant - Course</a>
+                <li><a class="dropdown-item" href="{% url 'update_cons_course' %}"> Update Consultant - Course</a>
+                {% if user.is_superuser %}
+                    <li><a class="dropdown-item" href="{% url 'add_consultant' %}">Add Consultant</a>
+                    <li><a class="dropdown-item" href="{% url 'add_cons_course' %}">Add Cons - Course</a>
+                {% endif %}
+              </ul>
+            </li>
+      {% endif %}
 
       {% if user.is_authenticated %}
           {% if user.is_superuser %}
@@ -59,7 +69,11 @@
             </li>
           {%endif %}
           <li class="nav-item">
-             <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+             <a class="nav-link" >
+              <form method="post" action="{% url 'logout_user' %}">
+                  {% csrf_token %}
+                  <button type="submit">logout</button>
+              </form></a>
           </li>
       {% else %}
         <li class="nav-item">
