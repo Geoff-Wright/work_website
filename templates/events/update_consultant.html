@@ -8,9 +8,10 @@
 
 		{% csrf_token %}
 		{{ form.as_p }}
+        {{ form2.as_p }}
 		<br/>
 		<input type="submit" value="Update" class="btn btn-secondary">
-        <a href="{% url 'delete_consultant' consultant.id %}" class="btn btn-outline-danger btn-sm">Delete Consultant</a>
+        <a href="{% url 'delete_consultant' user.id %}" class="btn btn-outline-danger btn-sm">Delete Consultant</a>
     </form>
 
 {% endblock %}

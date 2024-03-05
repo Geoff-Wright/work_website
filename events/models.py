@@ -10,6 +10,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.IntegerField(max_length=25, null=True, blank=True)
     location = models.CharField(max_length=30, null=True, blank=True)
+    company = models.CharField(max_length=30, null=True, blank=True)
 
 
 @receiver(post_save, sender=User)

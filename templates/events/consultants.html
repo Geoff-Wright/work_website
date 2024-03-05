@@ -6,11 +6,11 @@
 
     <table class="table table-striped table-hover table-bordered">
 
-    {% for consultant in consultant_list %}
+    {% for user in user_list %}
         <tr>
-            <td> <a href="{% url 'show_consultant' consultant.id %}" > {{ consultant }} </a><br/></td>
+            <td> <a href="{% url 'show_consultant' user.id %}" > {{ user }} </a><br/></td>
             <td align="right">
-                <a href="{% url 'update_consultant' consultant.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
+                <a href="{% url 'update_consultant' user.id %}" class="btn btn-outline-secondary btn-sm">Update</a>
             </td>
         </tr>
     {% endfor %}

@@ -10,13 +10,13 @@ urlpatterns = [
     path('delete_venue/<venue_id>', delete_venue, name='delete_venue'),
     path('show_venue/<venue_id>', show_venue, name='show_venue'),
     path('venue_events/<venue_id>', venue_events, name='venue_events'),
-    path('search_venues', search_venues, name='search_venues'),
+    path('search_venues/', search_venues, name='search_venues'),
 
     path('add_consultant/', add_consultant, name='add_consultant'),
     path('list_consultants/', list_consultants, name='list_consultants'),
-    path('update_consultant/', update_consultant, name='update_consultant'),
-    path('delete_consultant/', delete_consultant, name='delete_consultant'),
-    path('show_consultant/', show_consultant, name='show_consultant'),
+    path('update_consultant/<user_id>', update_consultant, name='update_consultant'),
+    path('delete_consultant/<user>', delete_consultant, name='delete_consultant'),
+    path('show_consultant/<user_id>', show_consultant, name='show_consultant'),
 
     path('add_event/', add_event, name='add_event'),
     path('add_events/', add_events, name='add_events'),

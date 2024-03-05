@@ -23,15 +23,16 @@ class ConsCourseForm(ModelForm):
         }
 
 
-class ConsultantForm(ModelForm):
-    consultant = forms.ChoiceField(choices=(User.objects.all()))
-
+class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name']
+        fields = ('first_name', 'last_name', 'email')
 
-    def __unicode__(self):
-        return self.consultant
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('phone', 'location', 'company')
 
 
 class EventForm(ModelForm):

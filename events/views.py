@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import VenueForm, EventForm, ConsultantForm, ConsCourseForm
+from .forms import VenueForm, EventForm, UserForm, ProfileForm, ConsCourseForm
 from django.http import HttpResponseRedirect
 from .models import *
 from django.http import JsonResponse
@@ -62,17 +62,17 @@ def venue_events(request, venue_id):
 
 
 def list_cons_course(request):
-    # cons_course_list = Cons_Course.objects.order_by(Consultant)
-    return render(request, 'events/cons_course.html', {})
+    cons_course_list = Cons_Course.objects.all()
+    return render(request, 'events/cons_course.html', {'cons_course_list': cons_course_list})
 
 
-def update_cons_course(request):
-    consultant_id = Cons_Course.objects.get(pk=1)
-    form = ConsCourseForm(request.POST or None, instance=consultant_id)
+def update_cons_course(request, user_id):
+    cons_course = Cons_Course.objects.get(pk=user_id)
+    form = ConsCourseForm(request.POST or None, instance=cons_course)
     if form.is_valid():
         form.save()
         return redirect('list_cons_course')
-    return render(request, 'events/update_cons_course.html', {'consultant_id': consultant_id, 'form': form})
+    return render(request, 'events/update_cons_course.html', {'cons_course': cons_course, 'form': form})
 
 
 def delete_cons_course(request, cons_course_id):
@@ -105,47 +105,55 @@ def list_certificates(request):
     return render(request, 'events/certificates.html', {'cert_list': cert_list})
 
 
-# *************CONSULTANTS
-def add_consultant(request):
-    submitted = False
-    if request.method == 'POST':
-        form = ConsultantForm(request.POST)
-        if form.is_valid:
-            form.save()
-            return HttpResponseRedirect('/add_consultant?submitted=True')
-    else:
-        form = ConsultantForm
-        if 'submitted' in request.GET:
-            submitted = True
-    return render(request, 'events/add_consultant.html', {'form': form, 'submitted': submitted})
-
-
+# *************CONSULTANT
+# navbar calls url list_consultants, url calls def
+# returns consultants
+# consultants calls show_consultant with user_id
+# consultants calls update_consultant with user_id and delete_consultant
+# navbar calls url add_consultant, url calls def
 def list_consultants(request):
-    # consultant_list = Consultant.objects.all()
-    return render(request, 'events/consultants.html', {})
-    # return render(request, 'events/consultants.html', {'consultant_list': consultant_list})
+    user_list = User.objects.all()
+    return render(request, 'events/consultants.html', {'user_list': user_list})
 
 
-def delete_consultant(request):
-    # consultant = Consultant.objects.get(pk=consultant_id)
-    # consultant.delete()
+def show_consultant(request, user_id):
+    user = User.objects.get(pk=user_id)
+    return render(request, 'events/show_consultant.html', {'user': user})
+
+
+def update_consultant(request, user_id):
+    user = User.objects.get(pk=user_id)
+    profile = Profile.objects.get(user=user_id)
+    form = UserForm(request.POST or None, instance=User)
+    form2 = ProfileForm(request.POST or None, instance=Profile)
+    if form.is_valid():
+        form.save()
+        form2.save()
+        return redirect('list_consultants')
+    return render(request, 'events/update_consultant.html', {'user': user, 'profile': profile, 'form': form, 'form2': form2})
+
+
+def delete_consultant(request, user):
+    user = User.objects.get(pk=user)
+    user.delete()
     return redirect('consultants')
 
 
-def update_consultant(request, consultant_id):
-    # consultant = Consultant.objects.get(pk=consultant_id)
-    consultant = '1'
-    form = ConsultantForm(request.POST or None, instance=consultant)
-    if form.is_valid():
-        form.save()
-        return redirect('list_consultants')
-    return render(request, 'events/update_consultant.html', {'consultant': consultant, 'form': form})
-
-
-def show_consultant(request, consultant_id):
-    # consultant = Consultant.objects.get(pk=consultant_id)
-    consultant = '1'
-    return render(request, 'events/show_consultant.html', {'consultant': consultant})
+def add_consultant(request):
+    submitted = False
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        form2 = ProfileForm(request.POST)
+        if form.is_valid and form2.is_valid:
+            form.save()
+            form2.save()
+            return HttpResponseRedirect('/add_consultant?submitted=True')
+    else:
+        form = UserForm
+        form2 = ProfileForm
+        if 'submitted' in request.GET:
+            submitted = True
+    return render(request, 'events/add_consultant.html', {'form': form, 'form2': form2, 'submitted': submitted})
 
 
 # ******VENUES
@@ -228,6 +236,10 @@ def list_events(request):
     return JsonResponse(out, safe=False)
 
 
+# navbar calls url all_events, url calls def
+# returns to events
+# events calls show_events with event_id
+# events calls update events with event_id and delete_event
 def all_events(request):
     event_list = Event.objects.all()
     return render(request, 'events/events.html', {'event_list': event_list})
